@@ -1,0 +1,48 @@
+# CMake build outputs
+/build*/
+/out/
+/bin/
+/lib/
+/CMakeFiles/
+/CMakeCache.txt
+/cmake_install.cmake
+/Makefile
+
+# CLion / Visual Studio Code / VS specific CMake builds
+/cmake-build-*/
+
+# Visual Studio
+/.vs/
+/*.sln
+/*.vcxproj*
+!*.vcxproj.in  # 可保留模板文件
+*.user
+
+# Xcode
+*.xcodeproj
+*.xcworkspace
+*.xcuser*
+
+# Build artifacts
+*.o
+*.obj
+*.so
+*.a
+*.lib
+*.dll
+*.exe
+*.dylib
+
+# IDE/editor files
+*.log
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+.DS_Store
+
+# Clangd, Python virtualenvs, and other cache dirs
+.cache/
+.venv/
+__pycache__/
