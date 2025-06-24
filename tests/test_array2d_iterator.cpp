@@ -1,13 +1,13 @@
 //
 // Created by qiming on 25-6-24.
 //
-#include <gtest/gtest.h>
-#include <gmock/gmock.h>
-#include <vector>
 #include <algorithm>
+#include <gmock/gmock.h>
+#include <gtest/gtest.h>
+#include <memory>
 #include <numeric>
 #include <type_traits>
-#include <memory>
+#include <vector>
 
 #include "array2d_iterator.hpp"
 
@@ -24,7 +24,7 @@ namespace {
      * @brief 测试用的简单结构体
      */
     struct TestStruct {
-        int value;
+        int    value;
         double data;
 
         TestStruct() : value(0), data(0) {}
@@ -63,7 +63,7 @@ namespace {
         return arr;
     }
 
-} // anonymous namespace
+}  // anonymous namespace
 
 // ================================
 // 基础功能测试
@@ -72,13 +72,13 @@ namespace {
 class Array2dIteratorTest : public ::testing::Test {
 protected:
     void SetUp() override {
-        size_ = 10;
-        int_array_ = create_test_array<int>(size_);
+        size_         = 10;
+        int_array_    = create_test_array<int>(size_);
         struct_array_ = create_test_array<TestStruct>(size_);
     }
 
-    size_t size_{};
-    std::unique_ptr<int[]> int_array_;
+    size_t                        size_{};
+    std::unique_ptr<int[]>        int_array_;
     std::unique_ptr<TestStruct[]> struct_array_;
 };
 
@@ -93,10 +93,10 @@ TEST_F(Array2dIteratorTest, BasicConstruction) {
     EXPECT_EQ(iter.data(), int_array_.get());
 
     // 测试类型特征
-    EXPECT_TRUE((std::is_same_v<Array2d_iterator<int>::value_type, int>));
-    EXPECT_TRUE((std::is_same_v<Array2d_iterator<int>::pointer, int *>));
-    EXPECT_TRUE((std::is_same_v<Array2d_iterator<int>::reference, int &>));
-    EXPECT_TRUE((std::is_same_v<Array2d_iterator<int>::iterator_category, std::contiguous_iterator_tag>));
+    EXPECT_TRUE((std::is_same_v<Array2d_iterator<int>::value_type, int>) );
+    EXPECT_TRUE((std::is_same_v<Array2d_iterator<int>::pointer, int *>) );
+    EXPECT_TRUE((std::is_same_v<Array2d_iterator<int>::reference, int &>) );
+    EXPECT_TRUE((std::is_same_v<Array2d_iterator<int>::iterator_category, std::contiguous_iterator_tag>) );
 }
 
 // 解引用操作测试
@@ -126,7 +126,7 @@ TEST_F(Array2dIteratorTest, ArrowOperatorTests) {
 
     // 2. 对于结构体/类类型，测试成员访问
     struct TestStruct {
-        int value;
+        int    value;
         double data;
 
         explicit TestStruct(int v = 0, double d = 0.0) : value(v), data(d) {}
@@ -138,9 +138,9 @@ TEST_F(Array2dIteratorTest, ArrowOperatorTests) {
 
     // 创建结构体数组
     auto struct_array = std::make_unique<TestStruct[]>(3);
-    struct_array[0] = TestStruct{42, 3.14};
-    struct_array[1] = TestStruct{100, 2.71};
-    struct_array[2] = TestStruct{200, 1.41};
+    struct_array[0]   = TestStruct{42, 3.14};
+    struct_array[1]   = TestStruct{100, 2.71};
+    struct_array[2]   = TestStruct{200, 1.41};
 
     Array2d_iterator<TestStruct> struct_iter(struct_array.get());
 
@@ -170,7 +170,7 @@ TEST_F(Array2dIteratorTest, ArrowOperatorWithComplexTypes) {
     // 测试包含指针成员的结构体
     struct ComplexStruct {
         std::unique_ptr<int> ptr;
-        std::vector<int> vec;
+        std::vector<int>     vec;
 
         ComplexStruct() : ptr(std::make_unique<int>(42)), vec{1, 2, 3} {}
 
@@ -179,7 +179,7 @@ TEST_F(Array2dIteratorTest, ArrowOperatorWithComplexTypes) {
         [[nodiscard]] size_t get_vec_size() const { return vec.size(); }
     };
 
-    auto complex_array = std::make_unique<ComplexStruct[]>(2);
+    auto                            complex_array = std::make_unique<ComplexStruct[]>(2);
     Array2d_iterator<ComplexStruct> complex_iter(complex_array.get());
 
     // 测试 -> 操作符访问复杂成员
@@ -198,7 +198,7 @@ TEST_F(Array2dIteratorTest, ArrowOperatorWithComplexTypes) {
 
 TEST_F(Array2dIteratorTest, ConstArrowOperatorTests) {
     struct TestStruct {
-        int value;
+        int         value;
         mutable int mutable_value;
 
         explicit TestStruct(int v = 0) : value(v), mutable_value(v * 2) {}
@@ -209,7 +209,7 @@ TEST_F(Array2dIteratorTest, ConstArrowOperatorTests) {
     };
 
     auto struct_array = std::make_unique<TestStruct[]>(2);
-    struct_array[0] = TestStruct{10};
+    struct_array[0]   = TestStruct{10};
 
     // const 迭代器测试
     Array2d_iterator<const TestStruct> const_iter(struct_array.get());
@@ -239,7 +239,7 @@ TEST_F(Array2dIteratorTest, ArrowOperatorTypeDeduction) {
         }
     };
 
-    auto struct_array = std::make_unique<TestStruct[]>(1);
+    auto                         struct_array = std::make_unique<TestStruct[]>(1);
     Array2d_iterator<TestStruct> iter(struct_array.get());
 
     // 测试 -> 操作符与现代 C++ 特性
@@ -391,8 +391,8 @@ TEST_F(Array2dIteratorTest, STLAlgorithms) {
     EXPECT_EQ(*found, 5);
 
     // std::count
-    int_array_[3] = 5; // 创建重复值
-    auto count = std::count(begin_iter, end_iter, 5);
+    int_array_[3] = 5;  // 创建重复值
+    auto count    = std::count(begin_iter, end_iter, 5);
     EXPECT_EQ(count, 2);
 
     // std::copy
@@ -408,7 +408,7 @@ TEST_F(Array2dIteratorTest, STLAlgorithms) {
 
     // std::accumulate
     auto sum = std::accumulate(begin_iter, end_iter, 0);
-    EXPECT_EQ(sum, 56); // 1+2+3+5+5+6+7+8+9+10
+    EXPECT_EQ(sum, 56);  // 1+2+3+5+5+6+7+8+9+10
 }
 
 // ================================
@@ -416,7 +416,7 @@ TEST_F(Array2dIteratorTest, STLAlgorithms) {
 // ================================
 
 TEST_F(Array2dIteratorTest, IteratorConcepts) {
-    using Iterator = Array2d_iterator<int>;
+    using Iterator      = Array2d_iterator<int>;
     using ConstIterator = Array2d_iterator<const int>;
 
     // C++20 迭代器概念测试
@@ -447,7 +447,7 @@ TEST_F(Array2dIteratorTest, BoundaryTests) {
     Array2d_iterator<int> iter(int_array_.get());
 
     // 测试大幅度跳跃
-    auto far_iter = iter + 1000;
+    auto far_iter  = iter + 1000;
     auto back_iter = far_iter - 1000;
     EXPECT_EQ(iter, back_iter);
 
@@ -469,8 +469,8 @@ TEST_F(Array2dIteratorTest, BoundaryTests) {
 // ================================
 
 TEST_F(Array2dIteratorTest, PerformanceTest) {
-    const size_t large_size = 1000000;
-    auto large_array = create_test_array<int>(large_size);
+    const size_t large_size  = 1000000;
+    auto         large_array = create_test_array<int>(large_size);
 
     Array2d_iterator<int> begin_iter(large_array.get());
     Array2d_iterator<int> end_iter(large_array.get() + large_size);
@@ -483,7 +483,7 @@ TEST_F(Array2dIteratorTest, PerformanceTest) {
         sum += *it;
     }
 
-    auto end = std::chrono::high_resolution_clock::now();
+    auto end      = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 
     // 验证结果正确性
@@ -491,7 +491,7 @@ TEST_F(Array2dIteratorTest, PerformanceTest) {
     EXPECT_EQ(sum, expected_sum);
 
     // 性能应该在合理范围内（这个测试可能需要根据具体环境调整）
-    EXPECT_LT(duration.count(), 10000); // 应该在10ms内完成
+    EXPECT_LT(duration.count(), 10000);  // 应该在10ms内完成
 }
 
 // ================================
@@ -538,14 +538,14 @@ TEST_F(Array2dIteratorTest, TypeTraitsTests) {
 
     // 测试 array2d_iterator_traits
     using traits = array2d_iterator_traits<Array2d_iterator<int>>;
-    EXPECT_TRUE((std::is_same_v<traits::value_type, int>));
-    EXPECT_TRUE((std::is_same_v<traits::pointer, int *>));
-    EXPECT_TRUE((std::is_same_v<traits::reference, int &>));
+    EXPECT_TRUE((std::is_same_v<traits::value_type, int>) );
+    EXPECT_TRUE((std::is_same_v<traits::pointer, int *>) );
+    EXPECT_TRUE((std::is_same_v<traits::reference, int &>) );
 
     // 测试标准库特化
     using std_traits = std::iterator_traits<Array2d_iterator<int>>;
-    EXPECT_TRUE((std::is_same_v<std_traits::value_type, int>));
-    EXPECT_TRUE((std::is_same_v<std_traits::iterator_category, std::contiguous_iterator_tag>));
+    EXPECT_TRUE((std::is_same_v<std_traits::value_type, int>) );
+    EXPECT_TRUE((std::is_same_v<std_traits::iterator_category, std::contiguous_iterator_tag>) );
 }
 
 // ================================
@@ -554,11 +554,11 @@ TEST_F(Array2dIteratorTest, TypeTraitsTests) {
 
 TEST_F(Array2dIteratorTest, TypeAliasTests) {
     // 测试便捷别名
-    EXPECT_TRUE((std::is_same_v<array2d_iterator<int>, Array2d_iterator<int>>));
-    EXPECT_TRUE((std::is_same_v<array2d_const_iterator<int>, Array2d_iterator<const int>>));
+    EXPECT_TRUE((std::is_same_v<array2d_iterator<int>, Array2d_iterator<int>>) );
+    EXPECT_TRUE((std::is_same_v<array2d_const_iterator<int>, Array2d_iterator<const int>>) );
 
     // 确保别名工作正常
-    array2d_iterator<int> iter1(int_array_.get());
+    array2d_iterator<int>       iter1(int_array_.get());
     array2d_const_iterator<int> iter2(iter1);
 
     EXPECT_EQ(*iter1, *iter2);
@@ -570,7 +570,7 @@ TEST_F(Array2dIteratorTest, TypeAliasTests) {
 // ================================
 
 TEST_F(Array2dIteratorTest, ConstCorrectnessTests) {
-    const int *const_ptr = int_array_.get();
+    const int                  *const_ptr = int_array_.get();
     Array2d_iterator<const int> const_iter(const_ptr);
 
     // const 迭代器应该只能读取，不能修改
@@ -585,14 +585,4 @@ TEST_F(Array2dIteratorTest, ConstCorrectnessTests) {
     Array2d_iterator<const int> another_const_iter(const_ptr);
     EXPECT_TRUE(const_iter > another_const_iter);
     EXPECT_EQ(const_iter - another_const_iter, 1);
-}
-
-
-// ================================
-// 主函数
-// ================================
-
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }
