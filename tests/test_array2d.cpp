@@ -823,10 +823,10 @@ TEST_F(Array2dTest, DeductionGuides) {
     auto arr5 = array2d{{1.0, 2.0}, {3.0, 4.0}};
     static_assert(std::is_same_v<decltype(arr5), array2d<double>>);
 
-    // 从容器推导(未实现)
-    // std::vector<int> vec{1, 2, 3, 4};
-    // auto             arr6 = array2d(2, 2, vec);
-    // static_assert(std::is_same_v<decltype(arr6), array2d<int, int>>);
+    // 从容器推导
+    std::vector<int> vec{1, 2, 3, 4};
+    auto             arr6 = array2d(2, 2, vec);
+    static_assert(std::is_same_v<decltype(arr6), array2d<int, int>>);
 }
 
 // ================================

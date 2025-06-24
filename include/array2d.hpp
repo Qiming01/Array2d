@@ -1264,8 +1264,10 @@ namespace qm {
      * @brief 基础推导指引 - 从尺寸和初值推导
      *
      * 从行数、列数和初始值推导出矩阵类型。
+     * 注意：这里排除了容器类型以避免歧义
      */
     template<Array2d_index_type IndexType, Array2d_compatible ValueType>
+        requires(!std::ranges::range<ValueType> || std::is_arithmetic_v<ValueType>)
     array2d(IndexType, IndexType, const ValueType &) -> array2d<ValueType, IndexType>;
 
     /**
@@ -1280,9 +1282,12 @@ namespace qm {
      * @brief 容器推导指引
      *
      * 从容器类型推导出矩阵的元素类型。
+     * 明确排除算术类型以避免与值构造冲突
      */
     template<Array2d_index_type IndexType, typename Container>
-        requires std::ranges::range<Container>
+        requires std::ranges::range<Container> &&
+                 (!std::is_arithmetic_v<Container>) &&
+                 Array2d_compatible<std::ranges::range_value_t<Container>>
     array2d(IndexType, IndexType, const Container &) -> array2d<std::ranges::range_value_t<Container>, IndexType>;
 
     /**
